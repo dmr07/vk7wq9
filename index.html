@@ -30,9 +30,7 @@
       <form onsubmit="return submitForm()">
         <input type="text" placeholder="First name" class="forminput" id="firstname">
         <input type="text" placeholder="Last name" class="forminput" id="lastname">
-        <br>
         <input type="text" placeholder="Email address" class="forminput email" id="email">
-        <br>
         <div class="errormessage" id="error"></div>
         <button class="formsubmit" onclick="submitForm()">Submit</button>
       </form>
@@ -245,8 +243,9 @@
       font-size: 16px;
     }
     .forminput.email {
-      width: 376px;
-      margin-top: 10px;
+  width: 376px;
+    margin-top: 10px;
+    display: block;    
     }
     .formsubmit {
       color: #009ae7;
@@ -304,14 +303,18 @@
       .column {
         display: block;
       }
+      .section-bordered {
+        border-top: 2px solid #eee;
+        padding: 45px 0 60px;
+      }
       .logo-text {
-    width: 400px;
-    margin: 130px 0 0;
-    height: 110px; }
+    width: 455px;
+    margin: 200px 0 0;
+    height: 130px;}
     
       .subheader {
-    font-size: 54px;
-    width: 650px;
+    font-size: 59px;
+    width: 100%;
     margin-top: 10px;
       }
       .downloadbutton {
@@ -336,6 +339,47 @@
     }
       .column-floatright {
         float: none;
+      }
+
+      h2 {
+          color: #6b6b6b;
+          font-weight: 300;
+          margin-bottom: 48px;
+          font-size: 54px;
+      }
+      .forminput {
+        border: 4px solid #eee;
+    padding: 20px 34px;
+    margin-right: 6px;
+    width: 100%;
+    margin-bottom: 24px;
+    border-radius: 14px;
+    font-size: 42px;
+    box-sizing: border-box;
+      }
+      .forminput.email {
+        width: 100%;
+        margin-top: 0;
+      }
+      .formsubmit {
+        color: #009ae7;
+    border: none;
+    padding: 8px;
+    font-size: 42px;
+    margin-top: 20px;
+      }
+      h5  {
+        font-size: 32px;
+      }
+      .socialcon {
+            width: 54px;
+    height: 54px;
+    display: inline-block;
+    margin: 30px;
+      }
+      .copyright {
+        margin-top: 50px;
+            font-size: 20px;
       }
     }
     @media only screen and (min-device-width: 768px){
