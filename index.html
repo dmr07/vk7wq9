@@ -6,7 +6,6 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
   </head>
   <body>
-
     <div class="viewcontainer"> 
     <div class="header">
       <div class="logo-icon"></div>
@@ -25,14 +24,33 @@
         </div>
       </div>
     </div>
-    <div class="section">
-      <div class="subheader">Sign up.</div>
+    <div class="section section-bordered">
+      <h2><span class="beta">Beta</span> Get Notified when the App is Ready</h2>
+      <form onsubmit="return submitForm()">
+        <input type="text" placeholder="First name" class="forminput" id="firstname">
+        <input type="text" placeholder="Last name" class="forminput" id="lastname">
+        <br>
+        <input type="text" placeholder="Email address" class="forminput email" id="email">
+        <br>
+        <div class="errormessage" id="error"></div>
+        <button class="formsubmit" onclick="submitForm()">Submit</button>
+      </form>
     </div>
-    <div class="section">
+    <div class="section section-bordered section-centered">
+      <h5>Get in touch</h5>
+      <a href="mailto:dan@bubblyplanet.com?Subject=Hey%20Dan!" target="_top">
+        <div class="socialcon email"></div>
+      </a>
+      <a href="https://twitter.com/BubblyPlanetHQ" target="blank">
+        <div class="socialcon twitter"></div>
+      </a>
+      <br>
+      <!-- <div class="footer-logo"></div> -->
+      <div class="copyright">&#169; Daniel Reed, 2017</div>
     </div>
 
   </div>
-  <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
     <script>
       // Initialize Firebase
       var config = {
@@ -44,6 +62,55 @@
         messagingSenderId: "119648002017"
       };
       firebase.initializeApp(config);
+    </script>
+    <script>
+      function validateEmail(email) {
+          var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return re.test(email);
+      }
+      function submitForm() {
+        console.log("submitting")
+        let el_fn = document.getElementById("firstname")
+        let el_ln = document.getElementById("lastname")
+        let el_em = document.getElementById("email")
+
+        let fn = el_fn.value.trim()
+        let ln = el_ln.value.trim()
+        let em = el_em.value.trim()
+        console.log(fn, ln, em)
+        let err = document.getElementById("error")
+        if (!fn || !ln) {
+          err.style.display = "block"
+          err.innerHTML = "* Please enter valid name."
+          return false
+        } 
+
+        if (!validateEmail(em)) {
+          err.style.display = "block"
+          err.innerHTML = "* Please enter a valid email."
+          return false
+        }
+
+        var ref = firebase.database().ref();
+        ref.child("betalist").push().set({
+          firstName : fn,
+          lastName : ln,
+          email: em
+        }, function(error) {
+          if (error) {
+            console.log(error)
+          }
+          err.style.display = "block"
+          err.innerHTML = "Done! You'll get an email from us when the app is ready."
+          err.style.color = "green"
+
+          el_fn.value = "";
+          el_ln.value = "";
+          el_em.value = "";
+          return false
+        })
+        return false
+      }
     </script>
   </body>
 
@@ -61,6 +128,39 @@
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       box-sizing: border-box;
+    }
+    a {
+      color:inherit;
+      text-decoration: none;
+     }
+    h2 {
+      color: #6b6b6b;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+    h4 {
+      font-weight: 400;
+      font-size: 16px;
+      color: #6b6b6b;
+    }
+    h5 {
+      color: #6b6b6b;
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 22px;
+    }
+    .errormessage {
+      color: red;
+      display: none;
+    margin-top: 20px;
+    font-size: 14px;
+    }
+    .beta {
+      color: rgb(240,155,0);
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 4px 10px;
+      margin-right: 4px;
     }
     .viewcontainer {
       max-width: 860px;
@@ -89,6 +189,14 @@
     }
     .section {
       display: block;
+      clear: both;
+    }
+    .section-bordered {
+      border-top: 1px solid #eee;
+      padding: 20px 0 30px;
+    }
+    .section-centered {
+      text-align: center;
     }
 
     .column {
@@ -128,11 +236,61 @@
       background: url(media/iphone.png) center / contain no-repeat;
     }
 
+    .forminput {
+      border: 2px solid #eee;
+      padding: 10px 14px;
+      margin-right: 6px;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .forminput.email {
+      width: 376px;
+      margin-top: 10px;
+    }
+    .formsubmit {
+      color: #009ae7;
+      border: none;
+      font-weight: 600;
+      padding: 8px;
+      background: #fff;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
     .demovideo {
       position: absolute;
       top: 112px;
       border-radius: 5px;
       left: 72px;
+    }
+
+    .footer-logo{
+      display: inline-block;
+      width: 40px;
+      margin-top: 8px;
+      height: 40px;
+      background: url(media/logo-icon.png) center / contain no-repeat;
+    }
+
+    .copyright {
+      margin-top: 30px;
+      color: #ccc;
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .socialcon {
+      width: 30px;
+      height: 30px;
+      display: inline-block;
+      margin: 10px;
+    }
+    .socialcon.email {
+      background: url(media/envelope.png) center / contain no-repeat;
+    }
+  
+    .socialcon.twitter {
+      background: url(media/twitter.png) center / contain no-repeat;
     }
 
   </style>
