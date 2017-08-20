@@ -2,7 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>BubblyPlanet | Augmented reality meets the world</title>
+    <meta name="description" content="BubblyPlanet is an AR (Augmented Reality) app for iOS that lets you write in your world.">
+    <meta name="keywords" content="BubblyPlanet, AR, Social, Augmented Reality, best iOS app 2017">
+    <meta name="author" content="Daniel Reed">
+    <title>BubblyPlanet | Augmented Reality meets the World</title>
     <link rel="icon" href="media/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
   </head>
@@ -14,7 +17,7 @@
     <div class="section main">
       <div class="column">
         <div class="logo-text"></div>
-        <div class="subheader">Simple and fun way to share your thoughts with the world.</div>
+        <div class="subheader">BubblyPlanet is a simple and fun way to express your thoughts to people nearby.</div>
         <div class="downloadbutton">Coming this Fall to iOS</div>
       </div>
       <div class="column column-floatright">
@@ -32,7 +35,7 @@
         <input type="text" placeholder="Last name" class="forminput" id="lastname">
         <input type="text" placeholder="Email address" class="forminput email" id="email">
         <div class="errormessage" id="error"></div>
-        <button class="formsubmit" onclick="submitForm()">Submit</button>
+        <button class="formsubmit" onclick="submitForm(event)">Submit</button>
       </form>
     </div>
     <div class="section section-bordered section-centered">
@@ -67,8 +70,12 @@
           var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return re.test(email);
       }
-      function submitForm() {
-        console.log("submitting")
+      function submitForm(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      
         let el_fn = document.getElementById("firstname")
         let el_ln = document.getElementById("lastname")
         let el_em = document.getElementById("email")
@@ -91,23 +98,39 @@
         }
 
         var ref = firebase.database().ref();
-        ref.child("betalist").push().set({
-          firstName : fn,
-          lastName : ln,
-          email: em
-        }, function(error) {
-          if (error) {
-            console.log(error)
-          }
-          err.style.display = "block"
-          err.innerHTML = "Done! You'll get an email from us when the app is ready."
-          err.style.color = "green"
-
-          el_fn.value = "";
-          el_ln.value = "";
-          el_em.value = "";
-          return false
+        ref.child("betalist").once('value', function(snapshot) {
+          var exists = false;
+          snapshot.forEach(function(childSnapshot){
+            if(em == childSnapshot.val().email){
+              exists = true;
+            }
+          })
+          userExistsCallback(em, exists);
         })
+        function userExistsCallback(em, exists) {
+          if (!exists) {
+            ref.child("betalist").push().set({
+              firstName : fn,
+              lastName : ln,
+              email: em
+            }, function(error) {
+              if (error) {
+                console.log(error)
+              }
+              err.style.display = "block"
+              err.innerHTML = "Done! You'll get an email from us when the app is ready."
+              err.style.color = "green"
+
+              el_fn.value = "";
+              el_ln.value = "";
+              el_em.value = "";
+            })
+          } else {
+            err.style.display = "block"
+            err.innerHTML = "This email is already in use. Please try another."
+            err.style.color = "red"
+          }
+        }
         return false
       }
     </script>
